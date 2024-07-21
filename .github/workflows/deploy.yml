@@ -4,10 +4,6 @@ on:
   push:
     branches: 'main'
 
-defaults:
-  run:
-    working-directory: client-svelte
-
 jobs:
   build_site:
     runs-on: ubuntu-latest
