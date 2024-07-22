@@ -61,10 +61,10 @@ function sendAction(action: String) {
     </div>
     {:else}
     <div>
-        <Button text="<" onClick={() => console.log("hello")} key = "arrow"/>
-        <Button text=">" onClick={() => console.log("hello")} key = "arrow"/>
-        <Button text="jump" onClick={() => sendAction(jump)} key = ""/>
-        <Button text="dive" onClick={() => sendAction(dive)} key = ""/>
+        <Button text="<" onPointerDown={() => sendAction(left)} onPointerUp = {() => sendAction(endLeft)} key = "arrow"/>
+        <Button text=">" onPointerDown={() => sendAction(right)} onPointerUp = {() => sendAction(endRight)} key = "arrow"/>
+        <Button text="jump" onPointerDown={() => sendAction(jump)} key = ""/>
+        <Button text="dive" onPointerDown={() => sendAction(dive)} key = ""/>
     </div>
     <div class="bottomright">
         <Button text="<" onClick={onLeave} key = ""/>
