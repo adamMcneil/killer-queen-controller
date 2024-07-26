@@ -19,6 +19,8 @@ let join = "Join";
 let jump = "Jump";
 let dive = "Dive";
 
+let socket: WebSocket;
+
 onMount(() => {
     if (!localStorage.getItem('game_state')) {
         localStorage.setItem('game_state', 'join');
@@ -30,6 +32,9 @@ onMount(() => {
             localStorage.setItem('game_state', 'join');
             game_state = 'join';
         }
+    }
+    if (localStorage.getItem("game_state")) {
+        socket = new WebSocket("ws://" + localStorage.getItem("ip"));
     }
 });
 
@@ -45,9 +50,15 @@ function onLeave() {
     localStorage.setItem('game_state', game_state);
 }
 
-function sendAction(action: String) {
-    control(localStorage.getItem('ip'), localStorage.getItem('name'), action);
+function sendAction(action: string) {
+    socket.send(JSON.stringify({
+			player: localStorage.getItem("name"),
+			movement: action,
+			time: performance.now() + performance.timeOrigin
+		})
+);
 }
+
 </script>
 
 <main>

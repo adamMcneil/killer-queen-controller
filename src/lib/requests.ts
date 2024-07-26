@@ -4,7 +4,8 @@ export async function control(ip: string, player: string, movement: string) {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			player: player,
-			movement: movement 
+			movement: movement,
+			time: performance.now() + performance.timeOrigin
 		})
 	});
 	return request;
