@@ -38,11 +38,18 @@ onMount(() => {
     }
 });
 
+function onConnect() {
+    if (localStorage.getItem("ip")) {
+        socket = new WebSocket("ws://" + localStorage.getItem("ip"));
+    }
+}
+
 function onJoin() {
     game_state = "controller"
     localStorage.setItem('game_state', game_state);
     localStorage.setItem('name', name);
     localStorage.setItem('ip', ip);
+    sendAction(join);
 }
 
 function onLeave() {
@@ -51,12 +58,12 @@ function onLeave() {
 }
 
 function sendAction(action: string) {
-    socket.send(JSON.stringify({
-			player: localStorage.getItem("name"),
-			movement: action,
-			time: performance.now() + performance.timeOrigin
-		})
-);
+    let json = JSON.stringify({
+        player: localStorage.getItem("name"),
+        movement: action,
+        time: 1  
+    })
+    socket.send(json)
 }
 
 </script>
@@ -69,6 +76,7 @@ function sendAction(action: string) {
     </div>
     <div>
         <Button text="Join" onClick={onJoin} key = ""/>
+        <Button text="Connect" onClick={onConnect} key = ""/>
     </div>
     {:else}
     <div>
