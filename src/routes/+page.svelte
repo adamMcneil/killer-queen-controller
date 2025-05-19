@@ -37,10 +37,24 @@
         };
     }
 
+    function leaving() {
+        console.log("sent");
+        let json = JSON.stringify({
+            player: Number(name),
+            is_purple: true,
+            is_leaving: true,
+            x_movement: x_movement,
+            jump: jump,
+        });
+        socket.send(json);
+    }
+
     function sendUpdate() {
         console.log("sent");
         let json = JSON.stringify({
-            player: name,
+            player: Number(name),
+            is_purple: true,
+            is_leaving: false,
             x_movement: x_movement,
             jump: jump,
         });
@@ -87,6 +101,13 @@
                 text="jump"
                 onPointerDown={() => {
                     jump = true;
+                }}
+                key=""
+            />
+            <Button
+                text="leaving"
+                onPointerDown={() => {
+                    leaving();
                 }}
                 key=""
             />
