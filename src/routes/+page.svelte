@@ -1,96 +1,99 @@
 <script lang="ts">
-import {
-    onMount
-} from 'svelte';
-import Button from "$lib/Button.svelte";
-import InputField from '$lib/InputField.svelte';
-  import { control } from '$lib/requests';
+    import { onMount } from "svelte";
+    import Button from "$lib/Button.svelte";
+    import InputField from "$lib/InputField.svelte";
 
-let name: string;
-let game_state: string;
-let ip: string;
-let valid_states: Set<string> = new Set<string>(["join", "controller"]);
+    let temp_name:string;
+    let name: string = "";
 
-let right = "Right";
-let left = "Left";
-let endRight= "EndRight";
-let endLeft= "EndLeft";
-let join = "Join";
-let jump = "Jump";
-let dive = "Dive";
+    let x_movement: number = 0;
+    let jump: boolean = false;
 
-let socket: WebSocket;
+    let socket: WebSocket;
 
-onMount(() => {
-    if (!localStorage.getItem('game_state')) {
-        localStorage.setItem('game_state', 'join');
-        game_state = 'join';
-    } else {
-        if (valid_states.has(localStorage.getItem('game_state'))) {
-            game_state = localStorage.getItem('game_state');
-        } else {
-            localStorage.setItem('game_state', 'join');
-            game_state = 'join';
+    let get_game_interval_ms: number = 10;
+    function sleep(ms: number) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function sendUpdates() {
+        await sleep(get_game_interval_ms);
+        sendUpdate();
+        sendUpdates();
+    }
+
+
+    function onJoin() {
+        name = temp_name;
+        const ip = window.location.hostname;
+        connect(ip);
+    }
+
+    function connect(ip: string) {
+        socket = new WebSocket("ws://" + ip + ":8000");
+        socket.onopen = (e: Event) => {
+            console.log(e);
+            sendUpdates();
+        };
+    }
+
+    function sendUpdate() {
+        console.log("sent");
+        let json = JSON.stringify({
+            player: name,
+            x_movement: x_movement,
+            jump: jump,
+        });
+        if (jump) {
+            jump = false;
         }
+        socket.send(json);
     }
-    if (localStorage.getItem("game_state")) {
-        socket = new WebSocket("ws://" + localStorage.getItem("ip"));
-    }
-});
-
-function onConnect() {
-    if (localStorage.getItem("ip")) {
-        socket = new WebSocket("ws://" + localStorage.getItem("ip"));
-    }
-}
-
-function onJoin() {
-    game_state = "controller"
-    localStorage.setItem('game_state', game_state);
-    localStorage.setItem('name', name);
-    localStorage.setItem('ip', ip);
-    sendAction(join);
-}
-
-function onLeave() {
-    game_state = "join"
-    localStorage.setItem('game_state', game_state);
-}
-
-function sendAction(action: string) {
-    let json = JSON.stringify({
-        player: localStorage.getItem("name"),
-        movement: action,
-        time: 1  
-    })
-    socket.send(json)
-}
-
 </script>
 
 <main>
-    {#if game_state == "join"}
-    <div>
-	    <InputField bind:value={ip} text="enter the ip address" />
-	    <InputField bind:value={name} text="enter our name" />
-    </div>
-    <div>
-        <Button text="Join" onClick={onJoin} key = ""/>
-        <Button text="Connect" onClick={onConnect} key = ""/>
-    </div>
+    {#if name == ""}
+        <InputField bind:value={temp_name} text="enter our name" />
+        <Button
+            text="Join"
+            onPointerDown={() => {
+                onJoin();
+            }}
+            key=""
+        />
     {:else}
-    <div>
-        <Button text="<" onPointerDown={() => sendAction(left)} onPointerUp = {() => sendAction(endLeft)} key = "arrow"/>
-        <Button text=">" onPointerDown={() => sendAction(right)} onPointerUp = {() => sendAction(endRight)} key = "arrow"/>
-        <Button text="jump" onPointerDown={() => sendAction(jump)} key = ""/>
-        <Button text="dive" onPointerDown={() => sendAction(dive)} key = ""/>
-    </div>
-    <div class="bottomright">
-        <Button text="<" onClick={onLeave} key = ""/>
-    </div>
+        <div>
+            <Button
+                text="<"
+                onPointerDown={() => {
+                    x_movement = -1;
+                }}
+                onPointerUp={() => {
+                    x_movement = 0;
+                }}
+                key="arrow"
+            />
+            <Button
+                text=">"
+                onPointerDown={() => {
+                    x_movement = 1;
+                }}
+                onPointerUp={() => {
+                    x_movement = 0;
+                }}
+                key="arrow"
+            />
+            <Button
+                text="jump"
+                onPointerDown={() => {
+                    jump = true;
+                }}
+                key=""
+            />
+        </div>
     {/if}
 </main>
 
 <style>
-@import '../app.css';
+    @import "../app.css";
 </style>
