@@ -6,20 +6,16 @@
     export let key: string = "";
 </script>
 
-{#if key == "small"}	
-<button class="small-button shadow" on:click={onClick} on:pointerdown={onPointerDown} on:pointerup={onPointerUp}> 
+<button
+    class={"shadow " + key}
+    on:click={onClick}
+    on:pointerdown={onPointerDown}
+    on:pointerup={onPointerUp}
+>
     {text}
 </button>
-{:else if key == "arrow"}
-    <button class="arrow shadow" on:click={onClick} on:pointerdown={onPointerDown} on:pointerup={onPointerUp}> 
-        {text}
-    </button>
-{:else}
-    <button class="button shadow" on:click={onClick} on:pointerdown={onPointerDown} on:pointerup={onPointerUp}> 
-        {text}
-    </button>
-{/if}
 
 <style>
-	@import '../app.css';
+    @import "../app.css";
 </style>
+

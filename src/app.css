@@ -1,28 +1,40 @@
 .button {
-  aspect-ratio: 1 / 1;
-  width: 15%;
-  background-color: #4caf50;
-  border-radius: 50%;
-  text-align: center;
-  font-size: 16px;
-  display: inline-block;
-  margin: 3%;
-}
-
-.arrow {
   font-size: 16px;
   min-height: 100vh;
-  width: 25%;
+  width: 23%;
   height: 90%;
   overflow-x: hidden;
   max-height: 100%;
   overflow-y: auto;
 }
 
+.button:active {
+  box-shadow: gray;
+  background-color: darkred; /* makes press color more dramatic */
+}
+
 .bottomright {
   position: absolute;
   bottom: 8px;
   right: 16px;
+}
+
+.purple {
+  background: purple;
+  height: 100vh;
+  width: 50vw;
+}
+
+.yellow {
+  background: yellow;
+  height: 100vh;
+  width: 50vw;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
@@ -33,7 +45,3 @@
   width: 500px;
   background-color: green;
 }
-/* .bottomright{
-  position: absolute;
-  bottom: 0px;
-} */
