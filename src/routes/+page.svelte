@@ -3,7 +3,7 @@
     import Button from "$lib/Button.svelte";
     import InputField from "$lib/InputField.svelte";
 
-    let temp_name:string;
+    let temp_name: string;
     let name: string = "";
 
     let x_movement: number = 0;
@@ -21,7 +21,6 @@
         sendUpdate();
         sendUpdates();
     }
-
 
     function onJoin() {
         name = temp_name;
@@ -47,6 +46,8 @@
             jump: jump,
         });
         socket.send(json);
+        socket.close();
+        name = "";
     }
 
     function sendUpdate() {
