@@ -126,7 +126,7 @@
                 jump = true;
             }}
             onPointerUp={() => {
-                jump = false;
+                // jump = false;
             }}
             key="button"
         />
